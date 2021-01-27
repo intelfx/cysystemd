@@ -60,7 +60,7 @@ class Facility(IntEnum):
 
 
 def write(message, priority=Priority.INFO):
-    """ Write message into systemd journal 
+    """ Write message into systemd journal
     :type priority: Priority
     :type message: str
     """
@@ -164,13 +164,9 @@ class JournaldLogHandler(logging.Handler):
         data["relative_ts"] = self._to_microsecond(data.pop("relativeCreated"))
         data["thread_name"] = data.pop("threadName")
 
-        args = data.pop("args", [])
-        if isinstance(args, Mapping):
-            for key, value in args.items():
-                data["argument_%s" % key] = value
-        else:
-            for idx, item in enumerate(args):
-                data["argument_%d" % idx] = str(item)
+        args = data.pop("args", {})
+        if args:
+            data["code_args"] = str(args)
 
         if tb_message:
             data["traceback"] = tb_message
