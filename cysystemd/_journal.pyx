@@ -24,6 +24,7 @@ cpdef _send(kwargs):
     cdef list items = list()
 
     for key, value in kwargs.items():
+        key_orig = key
         key = key.upper().strip()
 
         # The variable name must be in uppercase and
@@ -31,11 +32,11 @@ cpdef _send(kwargs):
         # and may not begin with an underscore.
 
         if key.startswith('_'):
-            raise ValueError('Key name may not begin with an underscore')
+            raise ValueError('Key name may not begin with an underscore: %s (full message: %s)' % (key_orig, str(kwargs)))
         elif not key.replace("_", '').isalnum():
             raise ValueError(
                 'Key name must be consist only of characters, '
-                'numbers and underscores'
+                'numbers and underscores: %s (full message: %s)' % (key_orig, str(kwargs))
             )
 
         items.append((key, value))
